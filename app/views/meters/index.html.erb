@@ -1,0 +1,15 @@
+<h1 class="mt-4">Temperature</h1>
+
+<%= line_chart(
+  @meters.map { |meter|
+    { name: meter.device_name, data: meter.measures.map { |measure| [measure.created_at_rounded, measure.temperature] } }
+  }
+) %>
+
+<h1 class="mt-4">Humidty</h1>
+
+<%= line_chart(
+  @meters.map { |meter|
+    { name: meter.device_name, data: meter.measures.map { |measure| [measure.created_at_rounded, measure.humidity] } }
+  }
+) %>

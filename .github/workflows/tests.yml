@@ -1,0 +1,104 @@
+---
+name: Tests
+on:
+  push:
+
+env:
+  PGHOST: localhost
+  PGPASS: runner
+  PGUSER: runner
+  RAILS_ENV: test
+  DATABASE_URL: postgresql://runner:runner@localhost
+
+jobs:
+  test:
+    name: ${{ matrix.name }}
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+
+      matrix:
+        include:
+          - command: bin/traceroute --ci
+            name: traceroute
+            requires_db: false
+            requires_ruby: true
+            requires_node: false
+          # - command: bin/prettier --ci
+          #   name: prettier
+          #   requires_db: false
+          #   requires_ruby: true
+          #   requires_node: true
+          - command: bin/brakeman --ci
+            name: brakeman
+            requires_db: false
+            requires_ruby: true
+            requires_node: false
+          # - command: bin/database_consistency --ci
+          #   name: database_consistency
+          #   requires_db: true
+          #   requires_ruby: true
+          #   requires_node: false
+          - command: bin/erblint --ci
+            name: erblint
+            requires_db: false
+            requires_ruby: true
+            requires_node: true
+          - command: bin/rspec
+            name: rspec
+            requires_db: true
+            requires_ruby: true
+            requires_node: true
+          - command: bin/rubocop --ci
+            name: rubocop
+            requires_db: false
+            requires_ruby: true
+            requires_node: true
+          - command: bin/eslint --ci
+            name: eslint
+            requires_db: false
+            requires_ruby: false
+            requires_node: true
+          # - command: bin/jest --ci
+          #   name: jest
+          #   requires_db: false
+          #   requires_ruby: false
+          #   requires_node: true
+
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: ${{ env.PGUSER }}
+          POSTGRES_PASSWORD: ${{ env.PGPASS }}
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+        if: ${{ matrix.requires_ruby }}
+
+      - name: Setup Node
+        uses: actions/setup-node@v2
+        with:
+          node-version: 'lts/*'
+          cache: 'yarn'
+        if: ${{ matrix.requires_node }}
+
+      - name: Install packages
+        run: yarn install
+        if: ${{ matrix.requires_node }}
+
+      - name: Setup test database
+        run: bin/rails db:setup
+        if: ${{ matrix.requires_db }}
+
+      - name: Run ${{ matrix.name }}
+        run: ${{ matrix.command }}

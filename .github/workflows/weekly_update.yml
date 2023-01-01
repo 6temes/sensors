@@ -1,0 +1,96 @@
+---
+name: Weekly Update
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   - cron: 0 21 * * 0
+
+jobs:
+  Weekly-Update:
+    name: Weekly Update
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Ruby
+        uses: ruby/setup-ruby@v1
+        with:
+          bundler-cache: true
+
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          cache: yarn
+          node-version: lts/*
+
+      - name: Setup git
+        run: |
+          git config user.name "Automated Weekly Update"
+          git config user.email "no-one@users.noreply.github.com"
+
+      - name: Update gems
+        run: |
+          bundle config unset deployment
+          bundle update
+
+      - name: Install packages
+        run: yarn install
+
+      - name: Update packages
+        run: yarn upgrade
+
+      - name: Check for outdated gems
+        id: bundle_outdated
+        run: |
+          command=$(bundle outdated | tail -n +5)
+          command="${command//'%'/'%25'}"
+          command="${command//$'\n'/'%0A'}"
+          command="${command//$'\r'/'%0D'}"
+          echo "::set-output name=COMMAND_OUTPUT::$command"
+
+      - name: Check for outdated packages
+        id: yarn_outdated
+        run: |
+          command=$(yarn outdated --non-interactive | tail -n +7 | head -n +1)
+          command="${command//'%'/'%25'}"
+          command="${command//$'\n'/'%0A'}"
+          command="${command//$'\r'/'%0D'}"
+          echo "::set-output name=COMMAND_OUTPUT::$command"
+
+      - name: Reformat code
+        continue-on-error: true
+        run: bin/format --all
+
+      - name: Create Pull Request
+        id: cpr
+        uses: peter-evans/create-pull-request@v4
+        with:
+          title: Weekly update
+          body: |
+            Updated gems and packages.
+
+            The following gems may need to be updated manually:
+
+            ${{ steps.bundle_outdated.outputs.COMMAND_OUTPUT }}
+
+            The following packages may need to be updated manually:
+
+            ${{ steps.yarn_outdated.outputs.COMMAND_OUTPUT }}
+          base: main
+          branch: weekly-update
+          commit-message: Update gems and packages and reformat code
+          delete-branch: true
+          reviewers: pwim
+          token: ${{ secrets.REPO_SCOPED_TOKEN }}
+
+      # Uncomment when the repository is in a paid Github plan
+      #
+      # - if: steps.cpr.outputs.pull-request-operation == 'created'
+      #   name: Enable Pull Request Automerge
+      #   uses: peter-evans/enable-pull-request-automerge@v2
+      #   with:
+      #     merge-method: squash
+      #     pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
+      #     token: ${{ secrets.REPO_SCOPED_TOKEN }}

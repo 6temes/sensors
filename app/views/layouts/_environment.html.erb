@@ -1,0 +1,5 @@
+<script>
+  window.HEROKU_RELEASE_VERSION = "<%= ENV.fetch 'HEROKU_RELEASE_VERSION', nil %>"
+  window.SENTRY_DSN             = "<%= ENV.fetch 'SENTRY_DSN', nil %>"
+  window.SENTRY_ENV             = "<%= ENV.fetch 'SENTRY_ENV', nil %>"
+</script>

@@ -1,0 +1,9 @@
+#!/bin/bash
+
+if [ "$1" == "--ci" ]; then
+  node_modules/.bin/eslint --ext .js --ext .json app/javascript
+elif [ "$1" == "--all" ]; then
+  node_modules/.bin/eslint --ext .js --ext .json --fix app/javascript
+else
+  bin/changed_files | grep -E '^app/.*\.(js|json)$' | xargs node_modules/.bin/eslint --fix
+fi

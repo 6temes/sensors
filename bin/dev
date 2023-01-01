@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+set -e
+
+if ! command -v overmind &> /dev/null
+then
+  echo "Installing overmind..."
+  brew install overmind
+fi
+
+echo "Getting dependencies up to date"
+yarn install --silent
+bundle install --quiet
+
+# echo "Clearing leftover jobs on the Sidekiq queues"
+# bin/rails sidekiq:clear_queues
+
+echo "Starting the app..."
+overmind start -f Procfile.dev

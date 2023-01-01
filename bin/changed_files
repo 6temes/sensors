@@ -1,0 +1,6 @@
+#!/bin/bash
+
+(
+  git diff-tree -r --no-commit-id --name-only --diff-filter=d origin/main head
+  git status --porcelain | grep -v "^ D" | cut -c 4-
+) | cat

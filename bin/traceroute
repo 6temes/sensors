@@ -1,0 +1,7 @@
+#!/bin/bash
+
+if [ "$1" == "--ci" ]; then
+  FAIL_ON_ERROR=true bin/rails traceroute
+else
+  bin/rails traceroute
+fi

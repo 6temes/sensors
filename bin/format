@@ -1,0 +1,6 @@
+#!/bin/bash
+
+bin/rubocop $1
+bin/erblint $1
+bin/eslint $1
+bin/prettier $1
