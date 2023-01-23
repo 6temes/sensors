@@ -3,7 +3,7 @@
 class MetersController < ApplicationController
   def index
     @temperatures =
-      NewMeasure::Temperature
+      Measure::Temperature
         .joins(:meter)
         .where.not(
           meters: {
@@ -14,7 +14,7 @@ class MetersController < ApplicationController
         .order(:meter_id, :created_at)
 
     @humidity =
-      NewMeasure::Humidity
+      Measure::Humidity
         .joins(:meter)
         .where.not(
           meters: {

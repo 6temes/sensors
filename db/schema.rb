@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.0].define(version: 2023_01_23_120055) do
+ActiveRecord::Schema[7.0].define(version: 2023_01_23_133856) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pgcrypto"
   enable_extension "plpgsql"
@@ -56,12 +56,13 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_120055) do
   end
 
   create_table "measures", force: :cascade do |t|
+    t.text "type", null: false
     t.bigint "meter_id", null: false
-    t.integer "humidity"
-    t.decimal "temperature"
+    t.decimal "datum", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["meter_id"], name: "index_measures_on_meter_id"
+    t.index ["type"], name: "index_measures_on_type"
   end
 
   create_table "meters", force: :cascade do |t|
@@ -73,15 +74,15 @@ ActiveRecord::Schema[7.0].define(version: 2023_01_23_120055) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "new_measures", force: :cascade do |t|
-    t.text "type"
+  create_table "old_measures", force: :cascade do |t|
     t.bigint "meter_id", null: false
-    t.decimal "datum"
+    t.integer "humidity"
+    t.decimal "temperature"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["meter_id"], name: "index_new_measures_on_meter_id"
+    t.index ["meter_id"], name: "index_old_measures_on_meter_id"
   end
 
   add_foreign_key "measures", "meters"
-  add_foreign_key "new_measures", "meters"
+  add_foreign_key "old_measures", "meters"
 end

@@ -11,8 +11,8 @@ class SyncDeviceJob < ApplicationJob
         hub_device_id: status[:body][:hub_device_id],
       ).find_or_create_by!(device_id:)
 
-    NewMeasure::Humidity.create! meter:, datum: status[:body][:humidity]
-    NewMeasure::Temperature.create! meter:, datum: status[:body][:temperature]
+    Measure::Humidity.create! meter:, datum: status[:body][:humidity]
+    Measure::Temperature.create! meter:, datum: status[:body][:temperature]
   end
 
   private
