@@ -109,7 +109,9 @@ GEM
     connection_pool (2.3.0)
     crass (1.0.6)
     date (3.3.3)
-    debug (1.7.1)
+    debug (1.7.0)
+      irb (>= 1.5.0)
+      reline (>= 0.3.1)
     debug_inspector (1.1.0)
     diff-lcs (1.5.0)
     erb_lint (0.3.1)
@@ -163,11 +165,15 @@ GEM
     hotwire-livereload (1.2.3)
       listen (>= 3.0.0)
       rails (>= 6.0.0)
+    htmlbeautifier (1.4.2)
     i18n (1.12.0)
       concurrent-ruby (~> 1.0)
     importmap-rails (1.1.5)
       actionpack (>= 6.0.0)
       railties (>= 6.0.0)
+    io-console (0.6.0)
+    irb (1.6.2)
+      reline (>= 0.3.0)
     json (2.6.3)
     launchy (2.5.2)
       addressable (~> 2.8)
@@ -257,6 +263,8 @@ GEM
     redis-client (0.12.1)
       connection_pool
     regexp_parser (2.6.2)
+    reline (0.3.2)
+      io-console (~> 0.5)
     rexml (3.2.5)
     rspec-core (3.12.0)
       rspec-support (~> 3.12.0)
@@ -395,7 +403,7 @@ DEPENDENCIES
   capybara
   chartkick
   cloudflare-rails
-  debug
+  debug (< 1.7.1)
   erb_lint
   factory_bot_rails
   faker
@@ -403,6 +411,7 @@ DEPENDENCIES
   groupdate
   health_check
   hotwire-livereload
+  htmlbeautifier
   importmap-rails
   letter_opener
   pg

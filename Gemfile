@@ -86,7 +86,7 @@ end
 
 group :development, :test do
   # See https://guides.rubyonrails.org/debugging_rails_applications.html#debugging-with-the-debug-gem
-  gem 'debug', platforms: %i[mri mingw x64_mingw]
+  gem 'debug', '<1.7.1', platforms: %i[mri mingw x64_mingw]
 
   # Lint ERB or HTML files
   gem 'erb_lint', require: false
@@ -139,6 +139,9 @@ group :development do
 
   # Live reload gem for Hotwire Rails apps.
   gem 'hotwire-livereload'
+
+  # A Ruby library for pretty-printing HTML
+  gem 'htmlbeautifier'
 end
 
 group :test do

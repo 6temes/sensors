@@ -13,5 +13,5 @@
 #  hub_device_id :string
 #
 class Meter < ApplicationRecord
-  has_many :measures, dependent: :destroy
+  has_many :new_measures, dependent: :nullify
 end
