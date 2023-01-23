@@ -1,15 +1,15 @@
 <h1 class="mt-4">Temperature</h1>
 
 <%= line_chart(
-  @meters.map { |meter|
-    { name: meter.device_name, data: meter.measures.map { |measure| [measure.created_at_rounded, measure.temperature] } }
+  @temperatures.group_by(&:meter).map { |meter, measures|
+    { name: meter.device_name, data: measures.map { |measure| [measure.created_at_rounded, measure.datum] } }
   }
 ) %>
 
 <h1 class="mt-4">Humidty</h1>
 
 <%= line_chart(
-  @meters.map { |meter|
-    { name: meter.device_name, data: meter.measures.map { |measure| [measure.created_at_rounded, measure.humidity] } }
+  @humidity.group_by(&:meter).map { |meter, measures|
+    { name: meter.device_name, data: measures.map { |measure| [measure.created_at_rounded, measure.datum] } }
   }
 ) %>
